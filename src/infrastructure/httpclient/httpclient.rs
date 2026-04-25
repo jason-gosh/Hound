@@ -1,30 +1,38 @@
-use reqwest::{Client, StatusCode, header::HeaderMap};
+use reqwest::{Client, header::HeaderMap};
 use serde::{Serialize, de::DeserializeOwned};
 use std::time::Duration;
 
-pub struct HttpClient {
-    client: Client,
-    base_url: String,
-}
+use super::HttpClient;
 
 impl HttpClient {
-    pub fn new(base_url: &str) -> Self {
+    pub fn new(base_url: &str, timeout: u64) -> Self {
         Self {
+            timeout: timeout,
             client: Client::builder()
-                .timeout(Duration::from_secs(10))
+                .timeout(Duration::from_secs(timeout))
                 .build()
                 .unwrap(),
             base_url: base_url.to_string(),
         }
     }
-    
+
     pub async fn get_as_text(&self, path: &str) -> Result<String, reqwest::Error> {
         let url = format!("{}{}", self.base_url, path);
+        tracing::info!(
+            "[REQ] timeout: {}, base_url: {}",
+            self.timeout,
+            self.base_url
+        );
         self.client.get(&url).send().await?.text().await
     }
 
     pub async fn get<R: DeserializeOwned>(&self, path: &str) -> Result<R, reqwest::Error> {
         let url = format!("{}{}", self.base_url, path);
+        tracing::info!(
+            "[REQ] timeout: {}, base_url: {}",
+            self.timeout,
+            self.base_url
+        );
         self.client.get(&url).send().await?.json::<R>().await
     }
 

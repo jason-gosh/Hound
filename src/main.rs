@@ -1,20 +1,27 @@
+mod application;
+mod domain;
 mod infrastructure;
-mod orchestrator;
-mod president;
-mod services;
 
-use serde::{Deserialize, Serialize};
+use clap::{Parser, Subcommand};
+use infrastructure::{Cli, Commands};
 
-use crate::services::httpclient::HttpClient;
+use crate::infrastructure::setup_database;
 
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
 
-    let http = HttpClient::new("https://http.cat");
+    let cli = Cli::parse();
 
-    match http.get_as_text("/status/308").await {
-        Ok(texto) => tracing::info!("data: {:?}", texto),
-        Err(e) => tracing::error!("Error at GET: {}", e),
+    match cli.command {
+        Commands::PoolSize { pool_size } => {
+            tracing::info!("Count for pool: {:?} .", pool_size);
+        }
+        Commands::DatabasePath { db_path } => {
+            tracing::info!("Trying connect to database: {:?}", db_path);
+            let path: Option<String> = db_path.clone();
+            let cli_pool_size = Some(10);
+            setup_database(db_path, cli_pool_size);
+        }
     }
 }

@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 pub struct DuckDbConfig {
     pub path: Option<String>,
     pub pool_size: u32,

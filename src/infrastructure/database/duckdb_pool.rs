@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 use duckdb::{DuckdbConnectionManager};
 
-use crate::infrastructure::database::struct_duckdb_config::DuckDbConfig;
+use crate::infrastructure::database::st_duckdb_config::DuckDbConfig;
 
 pub type DuckPool = r2d2::Pool<DuckdbConnectionManager>;
 

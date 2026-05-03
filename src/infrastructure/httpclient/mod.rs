@@ -1,4 +1,4 @@
+mod defaultheaders;
 mod httpclient;
-mod struct_http_client;
 
-pub use struct_http_client::HttpClient;
+pub use httpclient::HttpClient;

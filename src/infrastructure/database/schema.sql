@@ -1,0 +1,1 @@
+CREATE TABLE search_engine(id UTINYINT, "name" VARCHAR NOT NULL, url VARCHAR NOT NULL, PRIMARY KEY(id));
